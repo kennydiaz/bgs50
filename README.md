@@ -57,15 +57,8 @@ registrada en `~/.ssh/authorized_keys` de la cuenta). Hosting: Hostinger del cli
 Como el deploy no borra, si se elimina o renombra un archivo del repo hay que quitarlo
 también del servidor a mano.
 
-### WordPress anterior (retirado el 2026-10-18)
+### WordPress anterior
 
-bgs50.com tenía un WordPress sin contenido real (solo "Hello world!"). Todo quedó respaldado
-fuera de la web, en `~/backups/bgs50.com-wordpress-20261018/` del servidor:
-
-- `public_html.tar.gz`: copia completa de `public_html` antes del cambio.
-- `wordpress-db.sql`: volcado de la base de datos (`u965063574_F8Kg1`, que sigue existiendo).
-- `wordpress-files/`: los archivos de WordPress que se sacaron de `public_html`.
-
-Para volver atrás: mover `wordpress-files/*` de vuelta a `public_html` y restaurar el
-`.htaccess` desde el `.tar.gz`. Cuando ya no haga falta, se pueden borrar el respaldo y la
-base de datos desde hPanel.
+bgs50.com tenía un WordPress sin contenido real (solo "Hello world!"). Se retiró el
+2026-10-18 y se eliminó por completo (archivos, respaldo y tablas de la base de datos).
+`.private/` en `public_html` es de Hostinger y no se toca.
