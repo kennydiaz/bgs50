@@ -25,7 +25,6 @@ Todo está en [data/site.json](data/site.json). Cada empresa:
 
 ```json
 {
-    "slug": "ebop",
     "name": "E-BOP",
     "description": "Technology and business automation",
     "logo": "images/logo-ebop.png",

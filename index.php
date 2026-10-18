@@ -11,7 +11,7 @@ render_head($s['title'], $s['description']);
 
             <div class="companies-grid">
 <?php foreach ($s['companies'] as $c): ?>
-                <article class="company-card" data-company="<?= e($c['slug']) ?>">
+                <article class="company-card">
                     <div class="logo-panel">
                         <img src="<?= e(url($c['logo'])) ?>" alt="<?= e($c['name']) ?> logo" class="company-logo" loading="lazy" decoding="async">
                     </div>

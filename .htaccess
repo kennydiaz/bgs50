@@ -5,7 +5,6 @@
 DirectoryIndex index.php
 Options -Indexes
 AddDefaultCharset UTF-8
-AddType image/webp .webp
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
