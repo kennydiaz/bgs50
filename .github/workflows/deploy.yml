@@ -1,0 +1,80 @@
+name: Deploy a bgs50.com (SSH)
+
+# rsync sobre SSH al hosting de Hostinger donde vive bgs50.com (212.107.19.157).
+# Corre en cada push a main, o a mano desde Actions → Run workflow.
+#
+# Secrets requeridos (Settings → Secrets and variables → Actions):
+#   SSH_HOST        → IP del servidor (hPanel → Avanzado → Acceso SSH)
+#   SSH_USER        → usuario SSH (u#########)
+#   SSH_PRIVATE_KEY → clave privada del par; la pública se registra en
+#                     hPanel → Avanzado → Acceso SSH → Claves SSH
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-bgs50
+  cancel-in-progress: false
+
+env:
+  SSH_PORT: "65002"
+  DOMAIN: bgs50.com
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar secrets
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          faltan=""
+          [ -n "$SSH_HOST" ]        || faltan="$faltan SSH_HOST"
+          [ -n "$SSH_USER" ]        || faltan="$faltan SSH_USER"
+          [ -n "$SSH_PRIVATE_KEY" ] || faltan="$faltan SSH_PRIVATE_KEY"
+          if [ -n "$faltan" ]; then
+            echo "::error::Faltan secrets del deploy:$faltan"
+            exit 1
+          fi
+
+      # Un error de sintaxis tumbaría producción: se corta antes de subir.
+      - name: Lint PHP
+        run: |
+          find . -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+          php -r 'json_decode(file_get_contents("data/site.json"), false, 512, JSON_THROW_ON_ERROR);'
+
+      - name: Preparar clave SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      - name: Deploy via rsync
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        # Sin --delete: sube/actualiza, no borra nada del servidor.
+        # --delay-updates: los archivos se mueven a su lugar al final, así
+        # ninguna request ve una mezcla de archivos nuevos y viejos.
+        run: |
+          TARGET_DIR="/home/$SSH_USER/domains/$DOMAIN/public_html"
+          rsync -az --delay-updates \
+            -e "ssh -i ~/.ssh/deploy_key -p $SSH_PORT" \
+            --exclude '.git*' \
+            --exclude '.github/' \
+            --exclude '.claude/' \
+            --exclude '*.md' \
+            ./ "$SSH_USER@$SSH_HOST:$TARGET_DIR/"
+          echo "Deploy SSH completado hacia $TARGET_DIR"

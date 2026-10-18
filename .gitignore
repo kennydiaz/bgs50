@@ -1,0 +1,12 @@
+# Sistema operativo / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+.claude/
+
+# Logs y respaldos
+*.log
+*.zip
+*.bak

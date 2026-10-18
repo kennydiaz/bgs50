@@ -1,0 +1,51 @@
+# BGS Group — bgs50.com
+# Las reglas usan rutas relativas para funcionar igual en la raíz de bgs50.com
+# y en http://localhost/bgs50/.
+
+DirectoryIndex index.php
+Options -Indexes
+AddDefaultCharset UTF-8
+AddType image/webp .webp
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Solo en producción: forzar HTTPS y quitar www.
+    RewriteCond %{HTTP_HOST} ^(www\.)?bgs50\.com$ [NC]
+    RewriteCond %{HTTPS} off [OR]
+    RewriteCond %{HTTP_HOST} ^www\. [NC]
+    RewriteRule ^ https://bgs50.com%{REQUEST_URI} [R=301,L]
+
+    # Código interno, contenido y archivos del repo: no se sirven directo.
+    RewriteRule ^robots\.txt$ - [L]
+    RewriteRule ^(data|includes)(/|$) - [F,L]
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+    RewriteRule \.(md|txt|json|yml|log)$ - [F,L]
+
+    # URLs que no existen (incluidas las del WordPress anterior) -> 404 propio.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ 404.php [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml application/xml
+</IfModule>
+
+# CSS/JS llevan ?v=<fecha> desde PHP, así que se pueden cachear mucho tiempo.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>

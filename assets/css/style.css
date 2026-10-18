@@ -1,0 +1,457 @@
+/* ===== BGS Group ===== */
+
+:root {
+    --primary-red: #e63946;
+    --accent-yellow: #f1c40f;
+    --bg-black: #0f0f0f;
+    --bg-card: #1a1a1a;
+    --text-light: #dcdcdc;
+    --text-white: #ffffff;
+    --border-color: #333;
+    --gradient-red: linear-gradient(135deg, #e63946, #c62828);
+    --gradient-yellow: linear-gradient(135deg, #f1c40f, #e6c200);
+    --shadow-red: 0 8px 25px rgba(230, 57, 70, 0.3);
+    --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg-black);
+    color: var(--text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+main {
+    flex: 1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.skip-link {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    transform: translateY(-200%);
+    background: var(--primary-red);
+    color: var(--text-white);
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    z-index: 2000;
+}
+
+.skip-link:focus {
+    transform: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent-yellow);
+    outline-offset: 3px;
+}
+
+/* ===== HEADER ===== */
+.header {
+    position: sticky;
+    top: 0;
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 1000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header.is-scrolled {
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.header.is-hidden {
+    transform: translateY(-100%);
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    min-height: 72px;
+}
+
+.logo {
+    text-decoration: none;
+}
+
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: var(--gradient-red);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ===== COMPANIES ===== */
+.companies {
+    padding: 5rem 0 6rem;
+}
+
+.companies-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
+}
+
+.company-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), border-color 0.4s var(--ease);
+}
+
+.company-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.08), rgba(241, 196, 15, 0.08));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.company-card:hover,
+.company-card:focus-within {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(230, 57, 70, 0.2);
+    border-color: rgba(230, 57, 70, 0.5);
+}
+
+.company-card:hover::before,
+.company-card:focus-within::before {
+    opacity: 1;
+}
+
+/* Los logos vienen con y sin fondo blanco: un panel blanco los unifica y
+   object-fit: contain evita que se recorten. */
+.logo-panel {
+    height: 230px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.75rem;
+    overflow: hidden;
+}
+
+.company-logo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: filter 0.5s var(--ease), transform 0.5s var(--ease), opacity 0.5s var(--ease);
+}
+
+.company-card:hover .company-logo,
+.company-card:focus-within .company-logo {
+    filter: none;
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem 1.5rem 1.75rem;
+}
+
+.company-name {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--primary-red);
+    margin-bottom: 0.4rem;
+}
+
+.company-description {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+.visit-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--gradient-red);
+    color: var(--text-white);
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: var(--shadow-red);
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.visit-button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-yellow);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.visit-button:hover,
+.visit-button:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
+    color: #1a1a1a;
+}
+
+.visit-button:hover::before,
+.visit-button:focus-visible::before {
+    opacity: 1;
+}
+
+.icon-external {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.visit-button:hover .icon-external {
+    transform: translate(2px, -2px);
+}
+
+/* Aparición al hacer scroll (la clase la pone main.js; sin JS todo se ve). */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* ===== 404 ===== */
+.not-found {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    padding: 6rem 0;
+}
+
+.not-found .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.not-found-code {
+    font-size: 6rem;
+    font-weight: 700;
+    line-height: 1;
+    background: var(--gradient-red);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.not-found h1 {
+    color: var(--text-white);
+    font-size: 2rem;
+}
+
+.not-found p:not(.not-found-code) {
+    margin-bottom: 1rem;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    background: #0a0a0a;
+    border-top: 1px solid var(--border-color);
+    padding: 2rem 0;
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.footer .logo-text {
+    font-size: 1.5rem;
+}
+
+.footer p {
+    font-size: 0.9rem;
+}
+
+/* ===== SCROLL TO TOP ===== */
+.scroll-to-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: var(--gradient-red);
+    color: var(--text-white);
+    box-shadow: var(--shadow-red);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(120px);
+    transition: transform 0.3s ease, background 0.3s ease;
+    z-index: 1000;
+}
+
+.scroll-to-top.visible {
+    transform: none;
+}
+
+.scroll-to-top:hover {
+    background: var(--gradient-yellow);
+    color: #1a1a1a;
+}
+
+.scroll-to-top svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-red);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-yellow);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .companies-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .header-inner {
+        min-height: 60px;
+    }
+
+    .logo-text {
+        font-size: 1.5rem;
+    }
+
+    .companies {
+        padding: 2.5rem 0 4rem;
+    }
+
+    .companies-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1.5rem;
+    }
+
+    .logo-panel {
+        height: 190px;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .not-found-code {
+        font-size: 4.5rem;
+    }
+}
+
+/* En pantallas táctiles no hay hover: los logos van a color directamente. */
+@media (hover: none) {
+    .company-logo {
+        filter: none;
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+
+    .company-card:hover,
+    .company-card:focus-within {
+        transform: none;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+}

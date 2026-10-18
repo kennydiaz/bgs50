@@ -1,0 +1,51 @@
+{
+    "name": "BGS Group",
+    "url": "https://bgs50.com",
+    "title": "BGS Group - Business Portal | Electrical, Technology, Construction, Media",
+    "description": "BGS Group: electrical services, jobsite security cameras, business automation, mobile apps, advertising TV network and construction crews. Discover BGS Electrician, BGS Vision, E-BOP, E-BOP App, DASTV Network and Boots and Gloves LLC.",
+    "since": 2025,
+    "companies": [
+        {
+            "slug": "electrician",
+            "name": "BGS Electrician",
+            "description": "Specialized electrical services and maintenance",
+            "logo": "images/logo-bgs.png",
+            "url": "https://bgselectrician.com"
+        },
+        {
+            "slug": "bgs-vision",
+            "name": "BGS Vision",
+            "description": "Smart field cameras and security platform for construction at jobsites",
+            "logo": "images/logo-bgsvision.png",
+            "url": "https://bgsvision.com"
+        },
+        {
+            "slug": "ebop",
+            "name": "E-BOP",
+            "description": "Technology and business automation",
+            "logo": "images/logo-ebop.png",
+            "url": "https://e-bop.com"
+        },
+        {
+            "slug": "ebop-app",
+            "name": "E-BOP App",
+            "description": "Mobile applications and digital solutions",
+            "logo": "images/logo-ebopapp.png",
+            "url": "https://e-bop.net"
+        },
+        {
+            "slug": "dastv",
+            "name": "DASTV Network",
+            "description": "Non-Intrusive Advertising + Live TV. Dynamic Advertising System TV Network",
+            "logo": "images/logo-dastv.png",
+            "url": "https://dastvnetwork.com"
+        },
+        {
+            "slug": "boots",
+            "name": "Boots and Gloves LLC",
+            "description": "Electrical Crew Installers Powered by E-BOP.",
+            "logo": "images/logo-bootsandgloves.webp",
+            "url": "https://bootsgloves.com"
+        }
+    ]
+}
