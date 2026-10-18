@@ -167,27 +167,75 @@ main,
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(230, 57, 70, 0.08), rgba(241, 196, 15, 0.08));
+    background: linear-gradient(160deg, rgba(230, 57, 70, 0.1), transparent 55%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
 }
 
 .company-card:hover,
-.company-card:focus-within {
+.company-card:focus-within,
+.company-card.energized {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(230, 57, 70, 0.2);
-    border-color: rgba(230, 57, 70, 0.5);
+    box-shadow: 0 20px 40px rgba(230, 57, 70, 0.25);
+    border-color: transparent;
 }
 
 .company-card:hover::before,
-.company-card:focus-within::before {
+.company-card:focus-within::before,
+.company-card.energized::before {
     opacity: 1;
+}
+
+/* Corriente por el borde: un degradado cónico que gira, recortado con una
+   máscara para que solo se vea un anillo de 2px. En pausa fuera del hover,
+   así al salir se apaga en su lugar en vez de saltar al inicio. */
+@property --current-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.company-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 15px;
+    padding: 2px;
+    background: conic-gradient(from var(--current-angle),
+        transparent 0deg 240deg,
+        rgba(230, 57, 70, 0.5) 290deg,
+        #e63946 330deg,
+        #f1c40f 352deg,
+        transparent 360deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: current-run 1.6s linear infinite paused;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.company-card:hover::after,
+.company-card:focus-within::after,
+.company-card.energized::after {
+    opacity: 1;
+    animation-play-state: running;
+}
+
+@keyframes current-run {
+    to {
+        --current-angle: 360deg;
+    }
 }
 
 /* Los logos vienen con y sin fondo blanco: un panel blanco los unifica y
    object-fit: contain evita que se recorten. */
 .logo-panel {
+    position: relative;
     height: 230px;
     background: #ffffff;
     display: flex;
@@ -197,22 +245,41 @@ main,
     overflow: hidden;
 }
 
+/* Resplandor cálido detrás del logo al energizarse. */
+.logo-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 55%,
+        rgba(241, 196, 15, 0.22) 0%,
+        rgba(230, 57, 70, 0.12) 40%,
+        transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* multiply vuelve "transparente" el fondo blanco de algunos logos, así el
+   resplandor se ve parejo detrás de todos. */
 .company-logo {
+    position: relative;
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
-    filter: grayscale(100%);
-    opacity: 0.7;
-    transition: filter 0.5s var(--ease), transform 0.5s var(--ease), opacity 0.5s var(--ease);
+    mix-blend-mode: multiply;
+    transition: transform 0.5s var(--ease);
+}
+
+.company-card:hover .logo-panel::before,
+.company-card:focus-within .logo-panel::before,
+.company-card.energized .logo-panel::before {
+    opacity: 1;
 }
 
 .company-card:hover .company-logo,
-.company-card:focus-within .company-logo {
-    filter: none;
-    opacity: 1;
-    transform: scale(1.08);
+.company-card:focus-within .company-logo,
+.company-card.energized .company-logo {
+    transform: translateY(-4px) scale(1.06);
 }
-
 .card-body {
     flex: 1;
     display: flex;
@@ -449,14 +516,6 @@ main,
     }
 }
 
-/* En pantallas táctiles no hay hover: los logos van a color directamente. */
-@media (hover: none) {
-    .company-logo {
-        filter: none;
-        opacity: 1;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
@@ -472,6 +531,11 @@ main,
     .company-card:hover,
     .company-card:focus-within {
         transform: none;
+    }
+
+    .company-card::after {
+        animation: none !important;
+        background: linear-gradient(135deg, #e63946, #f1c40f);
     }
 
     .reveal {

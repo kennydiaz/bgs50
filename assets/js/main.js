@@ -29,6 +29,34 @@
         });
     }
 
+    // En pantallas táctiles no hay hover: cada tarjeta se energiza (una vuelta de
+    // corriente por el borde) al entrar en pantalla y otra vez al tocarla.
+    function setupEnergize() {
+        var touch = window.matchMedia('(hover: none)').matches;
+        if (reduceMotion || !touch || !('IntersectionObserver' in window)) return;
+
+        function energize(card) {
+            card.classList.add('energized');
+            clearTimeout(card.energizeTimer);
+            card.energizeTimer = setTimeout(function () {
+                card.classList.remove('energized');
+            }, 1600);
+        }
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                energize(entry.target);
+                observer.unobserve(entry.target);
+            });
+        }, { threshold: 0.6 });
+
+        document.querySelectorAll('.company-card').forEach(function (card) {
+            observer.observe(card);
+            card.addEventListener('touchstart', function () { energize(card); }, { passive: true });
+        });
+    }
+
     // Sombra al bajar; el header se esconde al bajar y vuelve al subir.
     function updateHeader(scrollY, lastY) {
         var header = document.querySelector('.header');
@@ -52,6 +80,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         setupReveal();
+        setupEnergize();
         var toTop = setupScrollToTop();
         var lastY = window.scrollY;
         var ticking = false;

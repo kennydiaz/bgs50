@@ -15,6 +15,9 @@
     var width = 0, height = 0, dpr = 1;
     var traces = [], pulses = [], flashes = [];
     var rafId = null, lastTime = 0, nextSpawn = 0, maxPulses = 3;
+    var hoveredCard = null;
+    var HOT_REACH = 72;   // px: qué tan cerca del borde debe terminar una pista
+    var HOT_EXTRA = 5;    // pulsos adicionales permitidos con una tarjeta energizada
 
     function rand(min, max) { return min + Math.random() * (max - min); }
     function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
@@ -156,27 +159,67 @@
         });
     }
 
-    function spawnPulse() {
-        var candidates = traces.filter(function (t) { return t.total >= GRID * 4; });
-        if (!candidates.length) return;
-        var rects = Array.prototype.map.call(document.querySelectorAll(".company-card, .header, .footer"), function (el) {
+    function coverRects() {
+        return Array.prototype.map.call(document.querySelectorAll('.company-card, .header, .footer'), function (el) {
             return el.getBoundingClientRect();
         });
+    }
+
+    function distToRect(p, r) {
+        var dx = Math.max(r.left - p[0], 0, p[0] - r.right);
+        var dy = Math.max(r.top - p[1], 0, p[1] - r.bottom);
+        return Math.hypot(dx, dy);
+    }
+
+    // Tarjeta "energizada": con el mouse encima, o con la clase que pone main.js
+    // en pantallas táctiles.
+    function hotCard() {
+        return hoveredCard || document.querySelector('.company-card.energized');
+    }
+
+    // Con una tarjeta energizada, los pulsos salen de pistas que terminan junto a
+    // ella y corren hacia su borde, como si la tarjeta atrajera la corriente.
+    function spawnToward(card, rects) {
+        var r = card.getBoundingClientRect();
+        var options = [];
+        traces.forEach(function (t) {
+            if (t.total < GRID * 3) return;
+            var first = t.pts[0];
+            var last = t.pts[t.pts.length - 1];
+            if (distToRect(last, r) < HOT_REACH && !isCovered(last, rects)) options.push([t, false]);
+            if (distToRect(first, r) < HOT_REACH && !isCovered(first, rects)) options.push([t, true]);
+        });
+        if (!options.length) return false;
+        var o = pick(options);
+        launch(o[0], o[1], rand(240, 360));
+        return true;
+    }
+
+    function spawnPulse(hot) {
+        var rects = coverRects();
+        if (hot && spawnToward(hot, rects)) return;
+
+        var candidates = traces.filter(function (t) { return t.total >= GRID * 4; });
+        if (!candidates.length) return;
         var trace = pick(candidates);
         for (var i = 0; i < 8 && isCovered(pointAt(trace, trace.total / 2), rects); i++) {
             trace = pick(candidates);
         }
+        launch(trace, Math.random() < 0.5, rand(110, 220));
+    }
+
+    function launch(trace, reverse, speed) {
         var pulse = {
             trace: trace,
-            reverse: Math.random() < 0.5,
+            reverse: reverse,
             dist: 0,
-            speed: rand(110, 220),
+            speed: speed,
             len: rand(60, 130),
             color: pick(COLORS),
             arrived: false
         };
         pulses.push(pulse);
-        flash(pointAt(trace, 0, pulse.reverse), pulse.color, 0.6);
+        flash(pointAt(trace, 0, reverse), pulse.color, 0.6);
     }
 
     function flash(p, color, strength) {
@@ -238,9 +281,12 @@
         var dt = Math.min((time - lastTime) / 1000, 0.05);
         lastTime = time;
 
-        if (time >= nextSpawn && pulses.length < maxPulses) {
-            spawnPulse();
-            nextSpawn = time + rand(250, 900);
+        if (time >= nextSpawn) {
+            var hot = hotCard();
+            if (pulses.length < maxPulses + (hot ? HOT_EXTRA : 0)) {
+                spawnPulse(hot);
+                nextSpawn = time + (hot ? rand(90, 220) : rand(250, 900));
+            }
         }
 
         pulses = pulses.filter(function (p) {
@@ -317,6 +363,16 @@
         resize();
         window.requestAnimationFrame(function () { canvas.classList.add('ready'); });
         start();
+
+        document.querySelectorAll('.company-card').forEach(function (card) {
+            card.addEventListener('mouseenter', function () {
+                hoveredCard = card;
+                nextSpawn = 0;
+            });
+            card.addEventListener('mouseleave', function () {
+                if (hoveredCard === card) hoveredCard = null;
+            });
+        });
 
         var resizeTimer;
         window.addEventListener('resize', function () {
