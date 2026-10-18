@@ -50,17 +50,22 @@ Cada push a `main` sube el sitio por rsync/SSH a
 sintaxis PHP y el JSON. No borra nada del servidor.
 
 Secrets del repo (Settings → Secrets and variables → Actions): `SSH_HOST`, `SSH_USER`,
-`SSH_PRIVATE_KEY`. El acceso SSH se activa en hPanel → Avanzado → Acceso SSH (puerto 65002),
-donde también se registra la clave pública.
+`SSH_PRIVATE_KEY`. Ya están configurados con una clave dedicada (`gh-actions-bgs50`,
+registrada en `~/.ssh/authorized_keys` de la cuenta). Hosting: Hostinger del cliente,
+212.107.19.157, puerto SSH 65002; la misma cuenta aloja e-bop.com, bgselectrician.com, etc.
 
-### Primera vez: retirar WordPress
+Como el deploy no borra, si se elimina o renombra un archivo del repo hay que quitarlo
+también del servidor a mano.
 
-El deploy no borra archivos, así que el WordPress anterior queda en `public_html` hasta
-quitarlo a mano. Nuestro `index.php` y `.htaccess` lo reemplazan, pero `wp-login.php`,
-`xmlrpc.php`, `wp-admin/`, etc. siguen accesibles mientras existan.
+### WordPress anterior (retirado el 2026-10-18)
 
-1. Respaldar (hPanel → Archivos → Copias de seguridad, o descargar `public_html` y la base de datos).
-2. Borrar de `public_html`: `wp-*`, `wp-admin/`, `wp-content/`, `wp-includes/`,
-   `xmlrpc.php`, `license.txt`, `readme.html`.
-3. Desactivar/quitar LiteSpeed Cache y purgar la caché en hPanel para que no sirva la página vieja.
-4. La base de datos de WordPress se puede eliminar después de confirmar que el sitio nuevo está bien.
+bgs50.com tenía un WordPress sin contenido real (solo "Hello world!"). Todo quedó respaldado
+fuera de la web, en `~/backups/bgs50.com-wordpress-20261018/` del servidor:
+
+- `public_html.tar.gz`: copia completa de `public_html` antes del cambio.
+- `wordpress-db.sql`: volcado de la base de datos (`u965063574_F8Kg1`, que sigue existiendo).
+- `wordpress-files/`: los archivos de WordPress que se sacaron de `public_html`.
+
+Para volver atrás: mover `wordpress-files/*` de vuelta a `public_html` y restaurar el
+`.htaccess` desde el `.tar.gz`. Cuando ya no haga falta, se pueden borrar el respaldo y la
+base de datos desde hPanel.
