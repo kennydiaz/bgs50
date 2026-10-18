@@ -78,6 +78,30 @@ main {
     outline-offset: 3px;
 }
 
+/* ===== FONDO DE CIRCUITO (lo crea circuit-bg.js) ===== */
+.circuit-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100lvh;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+
+.circuit-bg.ready {
+    opacity: 1;
+}
+
+main,
+.footer {
+    position: relative;
+    z-index: 1;
+}
+
 /* ===== HEADER ===== */
 .header {
     position: sticky;

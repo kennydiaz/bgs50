@@ -84,6 +84,7 @@ function render_footer(): void {
     </footer>
 
     <script src="<?= e(asset('assets/js/main.js')) ?>" defer></script>
+    <script src="<?= e(asset('assets/js/circuit-bg.js')) ?>" defer></script>
 </body>
 </html>
 <?php
