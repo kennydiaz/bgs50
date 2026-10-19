@@ -141,6 +141,38 @@ main,
     -webkit-text-fill-color: transparent;
 }
 
+/* Acceso al correo de la empresa (mail.bgs50.com). Contorno para no competir con los
+   botones de las tarjetas; al pasar el mouse se llena con el rojo de la marca. */
+.header-mail {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.55rem 1.2rem;
+    border: 1px solid rgba(230, 57, 70, 0.7);
+    border-radius: 25px;
+    color: var(--text-white);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.header-mail:hover,
+.header-mail:focus-visible {
+    background: var(--gradient-red);
+    border-color: transparent;
+    box-shadow: var(--shadow-red);
+}
+
+.icon-mail {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
 /* ===== COMPANIES ===== */
 .companies {
     padding: 5rem 0 6rem;

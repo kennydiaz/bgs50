@@ -66,6 +66,12 @@ function render_head(string $title, string $description, bool $index = true): vo
             <a href="<?= e(url()) ?>" class="logo" aria-label="<?= e($s['name']) ?> home">
                 <span class="logo-text"><?= e($s['name']) ?></span>
             </a>
+<?php if (!empty($s['webmail'])): ?>
+            <a href="<?= e($s['webmail']) ?>" class="header-mail" aria-label="Webmail: company email login">
+                <svg class="icon-mail" viewBox="0 0 24 24" aria-hidden="true"><path d="M20,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4M20,8L12,13L4,8V6L12,11L20,6V8Z"/></svg>
+                Webmail
+            </a>
+<?php endif; ?>
         </div>
     </header>
 <?php

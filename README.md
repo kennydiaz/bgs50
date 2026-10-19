@@ -32,6 +32,10 @@ Todo está en [data/site.json](data/site.json). Cada empresa:
 }
 ```
 
+El botón **Webmail** del encabezado lleva a la dirección de la clave `webmail` de
+[data/site.json](data/site.json) (`https://mail.bgs50.com`, el correo de la empresa). Sin esa
+clave el botón no aparece.
+
 El orden del arreglo es el orden en la página. Los logos van en `images/`; se muestran
 completos (sin recorte) sobre un panel blanco, en gris hasta pasar el mouse.
 Mantenerlos livianos: WebP o PNG de menos de ~50 KB.
