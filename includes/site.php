@@ -1,10 +1,33 @@
 <?php
 // Contenido del sitio: todo lo editable vive en data/site.json.
 
+// TEMPORAL (comparación para Said): dos versiones del sitio, "classic" (la actual,
+// rojo y amarillo) y "blue" (paleta y textos nuevos). Se elige con ?version=blue
+// o ?version=classic y queda en una cookie; sin nada, se ve la classic. Al aprobar
+// una, se borra esta función, el JSON que sobra y el interruptor del footer.
+function variant(): string {
+    static $variant = null;
+    if ($variant === null) {
+        $asked = $_GET['version'] ?? null;
+        if ($asked === 'blue' || $asked === 'classic') {
+            $variant = $asked;
+            setcookie('bgs_version', $asked, [
+                'expires'  => time() + 60 * 60 * 24 * 30,
+                'path'     => url(),
+                'samesite' => 'Lax',
+            ]);
+        } else {
+            $variant = ($_COOKIE['bgs_version'] ?? '') === 'blue' ? 'blue' : 'classic';
+        }
+    }
+    return $variant;
+}
+
 function site(): array {
     static $site = null;
     if ($site === null) {
-        $site = json_decode(file_get_contents(__DIR__ . '/../data/site.json'), true) ?: [];
+        $file = variant() === 'blue' ? 'site-blue.json' : 'site.json';
+        $site = json_decode(file_get_contents(__DIR__ . '/../data/' . $file), true) ?: [];
     }
     return $site;
 }
@@ -33,7 +56,7 @@ function render_head(string $title, string $description, bool $index = true): vo
     $s = site();
     ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"<?= variant() === 'blue' ? ' data-theme="blue"' : '' ?>>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,7 +64,7 @@ function render_head(string $title, string $description, bool $index = true): vo
     <meta name="description" content="<?= e($description) ?>">
     <meta name="author" content="<?= e($s['name']) ?>">
     <meta name="robots" content="<?= $index ? 'index, follow' : 'noindex' ?>">
-    <meta name="theme-color" content="#0f0f0f">
+    <meta name="theme-color" content="<?= variant() === 'blue' ? '#091425' : '#0f0f0f' ?>">
 <?php if ($index): ?>
     <link rel="canonical" href="<?= e($s['url']) ?>/">
     <meta property="og:type" content="website">
@@ -66,12 +89,17 @@ function render_head(string $title, string $description, bool $index = true): vo
             <a href="<?= e(url()) ?>" class="logo" aria-label="<?= e($s['name']) ?> home">
                 <span class="logo-text"><?= e($s['name']) ?></span>
             </a>
+            <nav class="header-nav" aria-label="Site">
+<?php if (!empty($s['hero'])): ?>
+            <a href="#companies" class="header-link"><?= e($s['companies_title'] ?? 'Our businesses') ?></a>
+<?php endif; ?>
 <?php if (!empty($s['webmail'])): ?>
             <a href="<?= e($s['webmail']) ?>" class="header-mail" aria-label="Webmail: company email login">
                 <svg class="icon-mail" viewBox="0 0 24 24" aria-hidden="true"><path d="M20,4H4A2,2 0 0,0 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6A2,2 0 0,0 20,4M20,8L12,13L4,8V6L12,11L20,6V8Z"/></svg>
                 Webmail
             </a>
 <?php endif; ?>
+            </nav>
         </div>
     </header>
 <?php
@@ -88,6 +116,16 @@ function render_footer(): void {
             <p>&copy; <?= $years ?> <?= e($s['name']) ?>. All rights reserved.</p>
         </div>
     </footer>
+
+<?php /* TEMPORAL: interruptor entre versiones; se quita cuando Said apruebe una.
+             Solo lo ve quien entró con ?version=, el público no. */ ?>
+<?php if (isset($_GET['version']) || isset($_COOKIE['bgs_version'])): ?>
+    <nav class="version-switch" aria-label="Design version">
+        <span class="version-switch-label">Version</span>
+        <a href="<?= e(url('?version=classic')) ?>"<?= variant() === 'classic' ? ' class="is-active" aria-current="true"' : '' ?>>Classic</a>
+        <a href="<?= e(url('?version=blue')) ?>"<?= variant() === 'blue' ? ' class="is-active" aria-current="true"' : '' ?>>Blue</a>
+    </nav>
+<?php endif; ?>
 
     <script src="<?= e(asset('assets/js/main.js')) ?>" defer></script>
     <script src="<?= e(asset('assets/js/circuit-bg.js')) ?>" defer></script>

@@ -1,17 +1,59 @@
 /* ===== BGS Group ===== */
 
+/* Paleta "classic" (rojo y amarillo). Todo color de marca sale de aquí; el tema
+   azul de abajo solo redefine estas variables. */
 :root {
-    --primary-red: #e63946;
-    --accent-yellow: #f1c40f;
-    --bg-black: #0f0f0f;
+    --primary: #e63946;
+    --primary-rgb: 230, 57, 70;
+    --accent: #f1c40f;
+    --accent-rgb: 241, 196, 15;
+    --bg: #0f0f0f;
     --bg-card: #1a1a1a;
-    --text-light: #dcdcdc;
+    --bg-header: rgba(15, 15, 15, 0.95);
+    --bg-footer: #0a0a0a;
+    --text: #dcdcdc;
     --text-white: #ffffff;
-    --border-color: #333;
-    --gradient-red: linear-gradient(135deg, #e63946, #c62828);
-    --gradient-yellow: linear-gradient(135deg, #f1c40f, #e6c200);
-    --shadow-red: 0 8px 25px rgba(230, 57, 70, 0.3);
+    --border: #333;
+    --gradient-primary: linear-gradient(135deg, #e63946, #c62828);
+    --gradient-accent: linear-gradient(135deg, #f1c40f, #e6c200);
+    --shadow-primary: 0 8px 25px rgba(230, 57, 70, 0.3);
+    --on-primary: #ffffff;
+    --on-accent: #1a1a1a;
+    --card-tint: linear-gradient(160deg, rgba(230, 57, 70, 0.1), transparent 55%);
+    --card-name: var(--primary);
+    --logo-glow: radial-gradient(circle at 50% 55%,
+        rgba(241, 196, 15, 0.22) 0%,
+        rgba(230, 57, 70, 0.12) 40%,
+        transparent 70%);
+    --logo-panel-height: 230px;
     --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* TEMPORAL: tema "blue" (propuesta de Said) mientras se compara con el classic.
+   Al aprobarse uno, estos valores pasan a :root o se borra este bloque. */
+:root[data-theme="blue"] {
+    --primary: #54b8f5;
+    --primary-rgb: 84, 184, 245;
+    --accent: #ffffff;
+    --accent-rgb: 255, 255, 255;
+    --bg: #081321;
+    --bg-card: linear-gradient(160deg, rgba(28, 50, 75, 0.92), rgba(15, 31, 51, 0.95));
+    --bg-header: rgba(8, 19, 33, 0.88);
+    --bg-footer: #060e19;
+    --text: #b9c9d9;
+    --border: #293e54;
+    --gradient-primary: linear-gradient(135deg, #5cd6e9, #3995ec);
+    --gradient-accent: linear-gradient(135deg, #ffffff, #d6ebff);
+    --shadow-primary: 0 8px 25px rgba(84, 184, 245, 0.3);
+    --on-primary: #04111f;
+    --on-accent: #081321;
+    --card-tint: linear-gradient(160deg, rgba(84, 184, 245, 0.14), transparent 55%);
+    --card-name: var(--text-white);
+    --logo-glow: radial-gradient(circle at 50% 55%,
+        rgba(255, 255, 255, 0.28) 0%,
+        rgba(84, 184, 245, 0.16) 40%,
+        transparent 70%);
+    --logo-panel-height: 180px;
 }
 
 *,
@@ -28,13 +70,23 @@ html {
 
 body {
     font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
-    background: var(--bg-black);
-    color: var(--text-light);
+    background: var(--bg);
+    color: var(--text);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+}
+
+/* Fondo azul: degradado radial fijo detrás del circuito. */
+:root[data-theme="blue"] body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse at 50% 8%, #142d47 0%, #0b192b 44%, #07101d 100%);
+    pointer-events: none;
 }
 
 main {
@@ -61,8 +113,8 @@ main {
     top: 8px;
     left: 8px;
     transform: translateY(-200%);
-    background: var(--primary-red);
-    color: var(--text-white);
+    background: var(--primary);
+    color: var(--on-primary);
     padding: 8px 12px;
     border-radius: 4px;
     text-decoration: none;
@@ -74,7 +126,7 @@ main {
 }
 
 :focus-visible {
-    outline: 2px solid var(--accent-yellow);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
 }
 
@@ -106,10 +158,10 @@ main,
 .header {
     position: sticky;
     top: 0;
-    background: rgba(15, 15, 15, 0.95);
+    background: var(--bg-header);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
     z-index: 1000;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -135,35 +187,58 @@ main,
 .logo-text {
     font-size: 1.8rem;
     font-weight: 700;
-    background: var(--gradient-red);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* Acceso al correo de la empresa (mail.bgs50.com). Contorno para no competir con los
-   botones de las tarjetas; al pasar el mouse se llena con el rojo de la marca. */
-.header-mail {
+.header-nav {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* Ancla a las empresas; solo aparece cuando hay hero encima. */
+.header-link {
+    color: var(--text);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.header-link:hover,
+.header-link:focus-visible {
+    color: var(--text-white);
+}
+
+/* Acceso al correo de la empresa (mail.bgs50.com). Contorno para no competir con los
+   botones de las tarjetas; al pasar el mouse se llena con el color de la marca. */
+.header-mail {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     min-height: 44px;
     padding: 0.55rem 1.2rem;
-    border: 1px solid rgba(230, 57, 70, 0.7);
+    border: 1px solid rgba(var(--primary-rgb), 0.7);
     border-radius: 25px;
     color: var(--text-white);
     text-decoration: none;
     font-weight: 500;
     font-size: 0.9rem;
-    transition: background 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    transition: background 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease), color 0.3s var(--ease);
 }
 
 .header-mail:hover,
 .header-mail:focus-visible {
-    background: var(--gradient-red);
+    background: var(--gradient-primary);
     border-color: transparent;
-    box-shadow: var(--shadow-red);
+    box-shadow: var(--shadow-primary);
+    color: var(--on-primary);
 }
 
 .icon-mail {
@@ -173,9 +248,73 @@ main,
     flex-shrink: 0;
 }
 
+/* ===== HERO (solo cuando el contenido trae "hero") ===== */
+.hero {
+    text-align: center;
+    padding: 4.5rem 0 0.5rem;
+}
+
+.hero-eyebrow {
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 1.4rem;
+}
+
+.hero-title {
+    color: var(--text-white);
+    font-size: clamp(2.6rem, 6.5vw, 4.6rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+}
+
+.hero-title span {
+    color: var(--primary);
+    white-space: nowrap;
+}
+
+.hero-rule {
+    height: 3px;
+    width: 68px;
+    border-radius: 9px;
+    background: var(--gradient-primary);
+    margin: 1.8rem auto 1.5rem;
+}
+
+.hero-tagline {
+    color: var(--text-white);
+    font-weight: 600;
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    letter-spacing: -0.01em;
+    margin-bottom: 1.3rem;
+}
+
+.hero-intro {
+    max-width: 760px;
+    margin: 0 auto;
+    line-height: 1.85;
+}
+
+.section-title {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2rem;
+}
+
 /* ===== COMPANIES ===== */
 .companies {
     padding: 5rem 0 6rem;
+}
+
+.hero + .companies {
+    padding-top: 3.5rem;
 }
 
 .companies-grid {
@@ -188,7 +327,7 @@ main,
     display: flex;
     flex-direction: column;
     background: var(--bg-card);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
     border-radius: 16px;
     overflow: hidden;
     position: relative;
@@ -199,7 +338,7 @@ main,
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(160deg, rgba(230, 57, 70, 0.1), transparent 55%);
+    background: var(--card-tint);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -209,7 +348,7 @@ main,
 .company-card:focus-within,
 .company-card.energized {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(230, 57, 70, 0.25);
+    box-shadow: 0 20px 40px rgba(var(--primary-rgb), 0.25);
     border-color: transparent;
 }
 
@@ -236,9 +375,9 @@ main,
     padding: 2px;
     background: conic-gradient(from var(--current-angle),
         transparent 0deg 240deg,
-        rgba(230, 57, 70, 0.5) 290deg,
-        #e63946 330deg,
-        #f1c40f 352deg,
+        rgba(var(--primary-rgb), 0.5) 290deg,
+        var(--primary) 330deg,
+        var(--accent) 352deg,
         transparent 360deg);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
@@ -268,7 +407,7 @@ main,
    object-fit: contain evita que se recorten. */
 .logo-panel {
     position: relative;
-    height: 230px;
+    height: var(--logo-panel-height);
     background: #ffffff;
     display: flex;
     align-items: center;
@@ -277,15 +416,12 @@ main,
     overflow: hidden;
 }
 
-/* Resplandor cálido detrás del logo al energizarse. */
+/* Resplandor detrás del logo al energizarse. */
 .logo-panel::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 55%,
-        rgba(241, 196, 15, 0.22) 0%,
-        rgba(230, 57, 70, 0.12) 40%,
-        transparent 70%);
+    background: var(--logo-glow);
     opacity: 0;
     transition: opacity 0.4s ease;
 }
@@ -312,6 +448,7 @@ main,
 .company-card.energized .company-logo {
     transform: translateY(-4px) scale(1.06);
 }
+
 .card-body {
     flex: 1;
     display: flex;
@@ -323,7 +460,7 @@ main,
 .company-name {
     font-size: 1.35rem;
     font-weight: 600;
-    color: var(--primary-red);
+    color: var(--card-name);
     margin-bottom: 0.4rem;
 }
 
@@ -338,8 +475,8 @@ main,
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--gradient-red);
-    color: var(--text-white);
+    background: var(--gradient-primary);
+    color: var(--on-primary);
     text-decoration: none;
     padding: 0.8rem 1.5rem;
     border-radius: 25px;
@@ -348,15 +485,15 @@ main,
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    box-shadow: var(--shadow-red);
-    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    box-shadow: var(--shadow-primary);
+    transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), color 0.3s var(--ease);
 }
 
 .visit-button::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--gradient-yellow);
+    background: var(--gradient-accent);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: -1;
@@ -365,8 +502,8 @@ main,
 .visit-button:hover,
 .visit-button:focus-visible {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(241, 196, 15, 0.3);
-    color: #1a1a1a;
+    box-shadow: 0 8px 25px rgba(var(--accent-rgb), 0.3);
+    color: var(--on-accent);
 }
 
 .visit-button:hover::before,
@@ -398,6 +535,22 @@ main,
     transform: none;
 }
 
+/* ===== FRANJA DE CIERRE (solo cuando el contenido trae "closing") ===== */
+.closing {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    padding: 1.8rem 0;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+}
+
+.closing span {
+    color: var(--primary);
+}
+
 /* ===== 404 ===== */
 .not-found {
     display: flex;
@@ -417,7 +570,7 @@ main,
     font-size: 6rem;
     font-weight: 700;
     line-height: 1;
-    background: var(--gradient-red);
+    background: var(--gradient-primary);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -434,8 +587,8 @@ main,
 
 /* ===== FOOTER ===== */
 .footer {
-    background: #0a0a0a;
-    border-top: 1px solid var(--border-color);
+    background: var(--bg-footer);
+    border-top: 1px solid var(--border);
     padding: 2rem 0;
 }
 
@@ -454,6 +607,51 @@ main,
     font-size: 0.9rem;
 }
 
+/* ===== TEMPORAL: INTERRUPTOR DE VERSIÓN ===== */
+.version-switch {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 4px 4px 14px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.version-switch-label {
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.65rem;
+    margin-right: 6px;
+}
+
+.version-switch a {
+    color: var(--text);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.version-switch a:hover {
+    color: var(--text-white);
+}
+
+.version-switch a.is-active {
+    background: var(--gradient-primary);
+    color: var(--on-primary);
+}
+
 /* ===== SCROLL TO TOP ===== */
 .scroll-to-top {
     position: fixed;
@@ -463,9 +661,9 @@ main,
     height: 48px;
     border: none;
     border-radius: 50%;
-    background: var(--gradient-red);
-    color: var(--text-white);
-    box-shadow: var(--shadow-red);
+    background: var(--gradient-primary);
+    color: var(--on-primary);
+    box-shadow: var(--shadow-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -480,8 +678,8 @@ main,
 }
 
 .scroll-to-top:hover {
-    background: var(--gradient-yellow);
-    color: #1a1a1a;
+    background: var(--gradient-accent);
+    color: var(--on-accent);
 }
 
 .scroll-to-top svg {
@@ -496,16 +694,16 @@ main,
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-black);
+    background: var(--bg);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary-red);
+    background: var(--primary);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-yellow);
+    background: var(--accent);
 }
 
 /* ===== RESPONSIVE ===== */
@@ -525,8 +723,24 @@ main,
         font-size: 1.5rem;
     }
 
+    .header-nav {
+        gap: 1rem;
+    }
+
+    .header-link {
+        display: none;
+    }
+
+    .hero {
+        padding-top: 3rem;
+    }
+
     .companies {
         padding: 2.5rem 0 4rem;
+    }
+
+    .hero + .companies {
+        padding-top: 2.5rem;
     }
 
     .companies-grid {
@@ -541,10 +755,21 @@ main,
     .footer-inner {
         flex-direction: column;
         text-align: center;
+        padding-bottom: 3.5rem;
     }
 
     .not-found-code {
         font-size: 4.5rem;
+    }
+
+    .version-switch {
+        left: 16px;
+        bottom: 16px;
+    }
+
+    .scroll-to-top {
+        right: 16px;
+        bottom: 16px;
     }
 }
 
@@ -567,7 +792,7 @@ main,
 
     .company-card::after {
         animation: none !important;
-        background: linear-gradient(135deg, #e63946, #f1c40f);
+        background: var(--gradient-primary);
     }
 
     .reveal {

@@ -5,7 +5,25 @@
     'use strict';
 
     var GRID = 32;
-    var COLORS = ['#e63946', '#e63946', '#e63946', '#f1c40f'];
+    // TEMPORAL: dos paletas mientras Said compara las versiones (data-theme en <html>).
+    // classic: corriente roja con chispas amarillas; blue: corriente celeste con
+    // destellos blancos sobre navy.
+    var THEMES = {
+        classic: {
+            pulses: ['#e63946', '#e63946', '#e63946', '#f1c40f'],
+            trace: 'rgba(255, 255, 255, 0.055)',
+            padFill: '#0f0f0f',
+            padStroke: 'rgba(255, 255, 255, 0.1)'
+        },
+        blue: {
+            pulses: ['#54b8f5', '#54b8f5', '#8fd3ff', '#ffffff'],
+            trace: 'rgba(143, 190, 235, 0.09)',
+            padFill: '#0b192b',
+            padStroke: 'rgba(143, 190, 235, 0.2)'
+        }
+    };
+    var THEME = THEMES[document.documentElement.getAttribute('data-theme')] || THEMES.classic;
+    var COLORS = THEME.pulses;
     // 8 direcciones en sentido horario empezando a la derecha: pares rectas, impares a 45°.
     var DIRS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
 
@@ -129,7 +147,7 @@
         g.lineCap = 'round';
         g.lineJoin = 'round';
 
-        g.strokeStyle = 'rgba(255, 255, 255, 0.055)';
+        g.strokeStyle = THEME.trace;
         g.lineWidth = 1.5;
         traces.forEach(function (t) {
             g.beginPath();
@@ -139,8 +157,8 @@
         });
 
         // Pads en los extremos de cada pista.
-        g.fillStyle = '#0f0f0f';
-        g.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        g.fillStyle = THEME.padFill;
+        g.strokeStyle = THEME.padStroke;
         traces.forEach(function (t) {
             [t.pts[0], t.pts[t.pts.length - 1]].forEach(function (p) {
                 g.beginPath();
