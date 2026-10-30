@@ -117,15 +117,12 @@ function render_footer(): void {
         </div>
     </footer>
 
-<?php /* TEMPORAL: interruptor entre versiones; se quita cuando Said apruebe una.
-             Solo lo ve quien entró con ?version=, el público no. */ ?>
-<?php if (isset($_GET['version']) || isset($_COOKIE['bgs_version'])): ?>
+<?php /* TEMPORAL: interruptor entre versiones, visible para todos; se quita cuando Said apruebe una. */ ?>
     <nav class="version-switch" aria-label="Design version">
         <span class="version-switch-label">Version</span>
         <a href="<?= e(url('?version=classic')) ?>"<?= variant() === 'classic' ? ' class="is-active" aria-current="true"' : '' ?>>Classic</a>
         <a href="<?= e(url('?version=blue')) ?>"<?= variant() === 'blue' ? ' class="is-active" aria-current="true"' : '' ?>>Blue</a>
     </nav>
-<?php endif; ?>
 
     <script src="<?= e(asset('assets/js/main.js')) ?>" defer></script>
     <script src="<?= e(asset('assets/js/circuit-bg.js')) ?>" defer></script>
