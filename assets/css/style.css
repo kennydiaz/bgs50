@@ -153,16 +153,15 @@ main,
 }
 
 .logo {
+    display: block;
     text-decoration: none;
 }
 
-.logo-text {
-    font-size: 1.8rem;
-    font-weight: 700;
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* Logo oficial de BGS Group, con fondo transparente. */
+.brand-logo {
+    display: block;
+    width: auto;
+    height: 52px;
 }
 
 .header-nav {
@@ -567,8 +566,8 @@ main,
     gap: 1rem;
 }
 
-.footer .logo-text {
-    font-size: 1.5rem;
+.footer .brand-logo {
+    height: 44px;
 }
 
 .footer p {
@@ -642,8 +641,8 @@ main,
         min-height: 60px;
     }
 
-    .logo-text {
-        font-size: 1.5rem;
+    .brand-logo {
+        height: 44px;
     }
 
     .header-nav {
@@ -711,5 +710,12 @@ main,
     .reveal {
         opacity: 1;
         transform: none;
+    }
+}
+
+/* En pantallas muy angostas el logo no debe tocar el botón de Webmail. */
+@media (max-width: 360px) {
+    .header .brand-logo {
+        height: 36px;
     }
 }

@@ -64,7 +64,7 @@ function render_head(string $title, string $description, bool $index = true): vo
     <header class="header">
         <div class="container header-inner">
             <a href="<?= e(url()) ?>" class="logo" aria-label="<?= e($s['name']) ?> home">
-                <span class="logo-text"><?= e($s['name']) ?></span>
+                <img src="<?= e(asset('images/logo-bgs-group.webp')) ?>" alt="<?= e($s['name']) ?>" class="brand-logo" width="640" height="185">
             </a>
             <nav class="header-nav" aria-label="Site">
             <a href="<?= e(url()) ?>#companies" class="header-link"><?= e($s['companies_title']) ?></a>
@@ -87,7 +87,7 @@ function render_footer(): void {
     ?>
     <footer class="footer">
         <div class="container footer-inner">
-            <span class="logo-text"><?= e($s['name']) ?></span>
+            <img src="<?= e(asset('images/logo-bgs-group.webp')) ?>" alt="<?= e($s['name']) ?>" class="brand-logo" width="640" height="185" loading="lazy" decoding="async">
             <p>&copy; <?= $years ?> <?= e($s['name']) ?>. All rights reserved.</p>
         </div>
     </footer>
