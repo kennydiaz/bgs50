@@ -1,44 +1,59 @@
 {
     "name": "BGS Group",
     "url": "https://bgs50.com",
-    "title": "BGS Group - Business Portal | Electrical, Technology, Construction, Media",
-    "description": "BGS Group: electrical services, jobsite security cameras, business automation, mobile apps, advertising TV network and construction crews. Discover BGS Electrician, BGS Vision, E-BOP, E-BOP App, DASTV Network and Boots and Gloves LLC.",
+    "title": "BGS GROUP | Multiple Industries. One Vision.",
+    "description": "BGS GROUP brings together a diverse portfolio of businesses: BGS Electrician, BGS VISION, E-BOP, E-BOP App, DAS TV NETWORK and Boots and Gloves LLC. Electrical services, surveillance intelligence, business automation, digital applications, advertising and live TV, and skilled workforce solutions.",
     "since": 2025,
     "webmail": "https://mail.bgs50.com",
+    "hero": {
+        "eyebrow": "One group · Multiple industries",
+        "title": "Multiple Industries.",
+        "title_accent": "One Vision.",
+        "tagline": "Driven by Innovation. Built for Excellence.",
+        "intro": "BGS GROUP brings together a diverse portfolio of businesses, each with its own identity, purpose, and expertise, united by a shared commitment to innovation, operational excellence, and long-term value."
+    },
+    "companies_title": "Our businesses",
+    "cta": "Explore company",
+    "closing": {
+        "before": "Connected Businesses.",
+        "accent": "Shared Values.",
+        "after": "Unlimited Possibilities."
+    },
     "companies": [
         {
             "name": "BGS Electrician",
-            "description": "Specialized electrical services and maintenance",
+            "description": "Electrical Services & Maintenance",
             "logo": "images/logo-bgs.png",
             "url": "https://bgselectrician.com"
         },
         {
-            "name": "BGS Vision",
-            "description": "Smart field cameras and security platform for construction at jobsites",
+            "name": "BGS VISION",
+            "description": "Surveillance Intelligence & Analytics",
             "logo": "images/logo-bgsvision.webp",
+            "logo_width": 240,
             "url": "https://bgsvision.com"
         },
         {
             "name": "E-BOP",
-            "description": "Technology and business automation",
+            "description": "Technology & Business Automation",
             "logo": "images/logo-ebop.png",
             "url": "https://e-bop.com"
         },
         {
             "name": "E-BOP App",
-            "description": "Mobile applications and digital solutions",
+            "description": "Digital Applications & Solutions",
             "logo": "images/logo-ebopapp.png",
             "url": "https://e-bop.net"
         },
         {
-            "name": "DASTV Network",
-            "description": "Non-Intrusive Advertising + Live TV. Dynamic Advertising System TV Network",
+            "name": "DAS TV NETWORK",
+            "description": "Digital Advertising & Live TV",
             "logo": "images/logo-dastv.png",
             "url": "https://dastvnetwork.com"
         },
         {
             "name": "Boots and Gloves LLC",
-            "description": "Electrical Crew Installers Powered by E-BOP.",
+            "description": "Skilled Workforce Solutions",
             "logo": "images/logo-bootsandgloves.webp",
             "url": "https://bootsgloves.com"
         }

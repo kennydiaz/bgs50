@@ -1,37 +1,6 @@
 /* ===== BGS Group ===== */
 
-/* Paleta "classic" (rojo y amarillo). Todo color de marca sale de aquí; el tema
-   azul de abajo solo redefine estas variables. */
 :root {
-    --primary: #e63946;
-    --primary-rgb: 230, 57, 70;
-    --accent: #f1c40f;
-    --accent-rgb: 241, 196, 15;
-    --bg: #0f0f0f;
-    --bg-card: #1a1a1a;
-    --bg-header: rgba(15, 15, 15, 0.95);
-    --bg-footer: #0a0a0a;
-    --text: #dcdcdc;
-    --text-white: #ffffff;
-    --border: #333;
-    --gradient-primary: linear-gradient(135deg, #e63946, #c62828);
-    --gradient-accent: linear-gradient(135deg, #f1c40f, #e6c200);
-    --shadow-primary: 0 8px 25px rgba(230, 57, 70, 0.3);
-    --on-primary: #ffffff;
-    --on-accent: #1a1a1a;
-    --card-tint: linear-gradient(160deg, rgba(230, 57, 70, 0.1), transparent 55%);
-    --card-name: var(--primary);
-    --logo-glow: radial-gradient(circle at 50% 55%,
-        rgba(241, 196, 15, 0.22) 0%,
-        rgba(230, 57, 70, 0.12) 40%,
-        transparent 70%);
-    --logo-panel-height: 230px;
-    --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* TEMPORAL: tema "blue" (propuesta de Said) mientras se compara con el classic.
-   Al aprobarse uno, estos valores pasan a :root o se borra este bloque. */
-:root[data-theme="blue"] {
     --primary: #54b8f5;
     --primary-rgb: 84, 184, 245;
     --accent: #ffffff;
@@ -41,6 +10,7 @@
     --bg-header: rgba(8, 19, 33, 0.88);
     --bg-footer: #060e19;
     --text: #b9c9d9;
+    --text-white: #ffffff;
     --border: #293e54;
     --gradient-primary: linear-gradient(135deg, #5cd6e9, #3995ec);
     --gradient-accent: linear-gradient(135deg, #ffffff, #d6ebff);
@@ -49,11 +19,13 @@
     --on-accent: #081321;
     --card-tint: linear-gradient(160deg, rgba(84, 184, 245, 0.14), transparent 55%);
     --card-name: var(--text-white);
+    --logo-panel-bg: #f5f1e8;
     --logo-glow: radial-gradient(circle at 50% 55%,
         rgba(255, 255, 255, 0.28) 0%,
         rgba(84, 184, 245, 0.16) 40%,
         transparent 70%);
     --logo-panel-height: 180px;
+    --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 *,
@@ -79,8 +51,8 @@ body {
     overflow-x: hidden;
 }
 
-/* Fondo azul: degradado radial fijo detrás del circuito. */
-:root[data-theme="blue"] body::before {
+/* Degradado radial fijo detrás del circuito. */
+body::before {
     content: '';
     position: fixed;
     inset: 0;
@@ -200,7 +172,7 @@ main,
     gap: 1.5rem;
 }
 
-/* Ancla a las empresas; solo aparece cuando hay hero encima. */
+/* Ancla a las empresas. */
 .header-link {
     color: var(--text);
     text-decoration: none;
@@ -248,7 +220,7 @@ main,
     flex-shrink: 0;
 }
 
-/* ===== HERO (solo cuando el contenido trae "hero") ===== */
+/* ===== HERO ===== */
 .hero {
     text-align: center;
     padding: 4.5rem 0 0.5rem;
@@ -310,11 +282,7 @@ main,
 
 /* ===== COMPANIES ===== */
 .companies {
-    padding: 5rem 0 6rem;
-}
-
-.hero + .companies {
-    padding-top: 3.5rem;
+    padding: 3.5rem 0 6rem;
 }
 
 .companies-grid {
@@ -403,12 +371,12 @@ main,
     }
 }
 
-/* Los logos vienen con y sin fondo blanco: un panel blanco los unifica y
+/* Los logos vienen con y sin fondo blanco: un panel color hueso los unifica y
    object-fit: contain evita que se recorten. */
 .logo-panel {
     position: relative;
     height: var(--logo-panel-height);
-    background: #ffffff;
+    background: var(--logo-panel-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -535,7 +503,7 @@ main,
     transform: none;
 }
 
-/* ===== FRANJA DE CIERRE (solo cuando el contenido trae "closing") ===== */
+/* ===== FRANJA DE CIERRE ===== */
 .closing {
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
@@ -605,51 +573,6 @@ main,
 
 .footer p {
     font-size: 0.9rem;
-}
-
-/* ===== TEMPORAL: INTERRUPTOR DE VERSIÓN ===== */
-.version-switch {
-    position: fixed;
-    left: 24px;
-    bottom: 24px;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 4px 4px 14px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid var(--border);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
-.version-switch-label {
-    color: var(--text);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.65rem;
-    margin-right: 6px;
-}
-
-.version-switch a {
-    color: var(--text);
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    transition: background 0.3s ease, color 0.3s ease;
-}
-
-.version-switch a:hover {
-    color: var(--text-white);
-}
-
-.version-switch a.is-active {
-    background: var(--gradient-primary);
-    color: var(--on-primary);
 }
 
 /* ===== SCROLL TO TOP ===== */
@@ -739,10 +662,6 @@ main,
         padding: 2.5rem 0 4rem;
     }
 
-    .hero + .companies {
-        padding-top: 2.5rem;
-    }
-
     .companies-grid {
         grid-template-columns: minmax(0, 1fr);
         gap: 1.5rem;
@@ -755,16 +674,10 @@ main,
     .footer-inner {
         flex-direction: column;
         text-align: center;
-        padding-bottom: 3.5rem;
     }
 
     .not-found-code {
         font-size: 4.5rem;
-    }
-
-    .version-switch {
-        left: 16px;
-        bottom: 16px;
     }
 
     .scroll-to-top {
